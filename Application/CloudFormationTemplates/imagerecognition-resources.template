@@ -144,54 +144,29 @@
             }
         },
 
-        "TableCommunicationConnection": {
-            "Type": "AWS::DynamoDB::Table",
+		"FrontendCluster": {
+            "Type": "AWS::ECS::Cluster",
             "Description": "",
             "Properties": {
-                "AttributeDefinitions": [
-                    {
-                        "AttributeName": "connectionId",
-                        "AttributeType": "S"
-                    },
-					{
-						"AttributeName" : "username",
-                        "AttributeType" : "S"
-					}
-                ],
-                "KeySchema": [
-					{
-						"AttributeName": "connectionId",
-						"KeyType": "HASH"
-					}
-                ],
-                "GlobalSecondaryIndexes" : [
-					{
-						"IndexName" : "username",
-                        "KeySchema" : [
-							{
-								"AttributeName" : "username",
-                                "KeyType" : "HASH"
-							}
-						],
-                        "Projection" : {
-							"ProjectionType" : "ALL"
-						}
-					}
-				],
-                "BillingMode" : "PAY_PER_REQUEST",
-                "TableName": {
+                "ClusterName": {
                     "Fn::Join": [
                         "-",
                         [
                             {
                                 "Ref": "AWS::StackName"
                             },
-                            "CommunicationConnections"
+                            "Frontend"
                         ]
                     ]
                 }
             }
         },
+
+		"ImageRecognitionArtifactStore" : {
+		    "Type" : "AWS::S3::Bucket",
+		    "Properties" : {
+		    }
+		},
 
         "FrontendRepository": {
             "Type": "AWS::ECR::Repository",
@@ -556,15 +531,24 @@
             }
         },
 
-        "ParameterTableCommunicationConnections": {
+        "ParameterFrontendCluster": {
             "Type": "AWS::SSM::Parameter",
-            "Description": "Stores the connection ids for the websocket connections made in the client.",
+            "Description": "Stores the ID of the cluster defined for our Fargate instances into Parameter Store.",
             "Properties": {
                 "Type": "String",
                 "Value": {
-                    "Ref": "TableCommunicationConnection"
+                    "Ref": "FrontendCluster"
                 },
-                "Name": "/ImageRecognition/AppOptions/TableCommunicationConnection"
+                "Name": "/ImageRecognition/FrontendCluster"
+            }
+        },
+
+        "ParameterImageRecognitionArtifactStore" : {
+            "Type" : "AWS::SSM::Parameter",
+            "Properties" : {
+                "Type" : "String",
+                "Value" : {"Ref" : "ImageRecognitionArtifactStore"},
+                "Name" : "/ImageRecognition/ImageRecognitionArtifactStore"
             }
         },
 

@@ -44,30 +44,6 @@
                 "DockerTag": ""
             }
         },
-        "ExtractImageMetadataFunction": {
-            "Type": "AWS::Lambda::Function",
-            "Description" : "Extract image metadata such as format, size, geolocation, etc.",
-            "Properties": {
-                "PackageType": "Image",
-                "Environment": {
-                    "Variables": {
-                        "COMMUNICATION_CONNECTION_TABLE": {"Ref": "CommunicationConnectionsTable"}
-                    }
-                },
-                "ImageConfig": { "Command": [ "extract-image-metadata::extract_image_metadata.Function::FunctionHandler" ]},
-                "Role": { "Fn::GetAtt": ["LambdaRole", "Arn"] },
-                "MemorySize": 1024,
-                "Timeout": 200,
-                "Code": {
-                    "ImageUri": "./extract-image-metadata"
-                }
-            },
-            "Metadata": {
-                "Dockerfile": "Dockerfile",
-                "DockerContext": ".",
-                "DockerTag": ""
-            }
-        },
         "StoreImageMetadataFunction": {
             "Type": "AWS::Lambda::Function",
             "Description" : "Store image metadata into database",
