@@ -168,6 +168,12 @@
 		    }
 		},
 
+        "PhotoStorageBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Description": "",
+            "Properties": {}
+        },
+
         "FrontendRepository": {
             "Type": "AWS::ECR::Repository",
             "Description": "Repository holding the deployed web application images.",
@@ -549,6 +555,18 @@
                 "Type" : "String",
                 "Value" : {"Ref" : "ImageRecognitionArtifactStore"},
                 "Name" : "/ImageRecognition/ImageRecognitionArtifactStore"
+            }
+        },
+
+        "ParameterPhotoStorageBucket": {
+            "Type": "AWS::SSM::Parameter",
+            "Description": "Stores the name of the S3 storage bucket to Parameter Store.",
+            "Properties": {
+                "Type": "String",
+                "Value": {
+                    "Ref": "PhotoStorageBucket"
+                },
+                "Name": "/ImageRecognition/AppOptions/PhotoStorageBucket"
             }
         },
 
