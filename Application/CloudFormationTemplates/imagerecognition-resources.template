@@ -236,26 +236,6 @@
             }
         },
 
-        "SubnetC": {
-            "Type": "AWS::EC2::Subnet",
-            "Description": "Public subnet",
-            "Properties": {
-                "CidrBlock": "10.0.2.0/24",
-                "VpcId": {
-                    "Ref": "ImageRecognitionVpc"
-                },
-                "MapPublicIpOnLaunch": "True",
-                "AvailabilityZone": {
-                    "Fn::Select": [
-                        "2",
-                        {
-                            "Fn::GetAZs": ""
-                        }
-                    ]
-                }
-            }
-        },
-
         "InternetGateway": {
             "Type": "AWS::EC2::InternetGateway",
             "Description": "Gateway to provides connectivity to and from the internet for the VPC.",
@@ -321,19 +301,6 @@
                 },
                 "SubnetId": {
                     "Ref": "SubnetB"
-                }
-            }
-        },
-
-        "SubnetCRouteTableAssociation": {
-            "Type": "AWS::EC2::SubnetRouteTableAssociation",
-            "Description": "Route table association to permit traffic in subnet to reach gateway.",
-            "Properties": {
-                "RouteTableId": {
-                    "Ref": "RouteTable"
-                },
-                "SubnetId": {
-                    "Ref": "SubnetC"
                 }
             }
         },
@@ -443,9 +410,6 @@
                     },
                     {
                         "Ref": "SubnetB"
-                    },
-                    {
-                        "Ref": "SubnetC"
                     }
                 ]
             }
@@ -635,18 +599,6 @@
                     "Ref": "SubnetB"
                 },
                 "Name": "/ImageRecognition/SubnetB"
-            }
-        },
-
-        "ParameterSubnetC": {
-            "Type": "AWS::SSM::Parameter",
-            "Description": "Stores the ID of a one of our subnets for our Fargate instances into Parameter Store.",
-            "Properties": {
-                "Type": "String",
-                "Value": {
-                    "Ref": "SubnetC"
-                },
-                "Name": "/ImageRecognition/SubnetC"
             }
         },
 
