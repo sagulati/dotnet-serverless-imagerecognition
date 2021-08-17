@@ -5,7 +5,6 @@ using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.Util;
 using ImageRecognition.API.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,9 +12,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Logging;
-using NSwag;
-using NSwag.Generation.Processors.Security;
 
 namespace ImageRecognition.API
 {
@@ -53,8 +49,6 @@ namespace ImageRecognition.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
-
-            app.UseResponseCompression();
 
             app.UseHttpsRedirection();
 
