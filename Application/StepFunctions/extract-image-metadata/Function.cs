@@ -30,34 +30,27 @@ namespace extract_image_metadata
         public async Task<ImageMetadata> FunctionHandler(ExecutionInput state, ILambdaContext context)
         {
             var srcKey = WebUtility.UrlDecode(state.SourceKey);
-            var tmpPath = Path.Combine(Path.GetTempPath(), Path.GetFileName(srcKey));
-            try
+            
+            var metadata = new ImageMetadata();
+            using (var response = await S3Client.GetObjectAsync(state.Bucket, srcKey))
             {
-                var metadata = new ImageMetadata();
-                using (var response = await S3Client.GetObjectAsync(state.Bucket, srcKey))
+                using (var sourceImage = Image.Load(response.ResponseStream, out var format))
                 {
-                    using (var sourceImage = Image.Load(response.ResponseStream, out var format))
-                    {
-                        metadata.OriginalImagePixelCount = sourceImage.Width * sourceImage.Height;
+                    metadata.OriginalImagePixelCount = sourceImage.Width * sourceImage.Height;
 
-                        metadata.Width = sourceImage.Width;
+                    metadata.Width = sourceImage.Width;
 
-                        metadata.Height = sourceImage.Height;
+                    metadata.Height = sourceImage.Height;
 
-                        metadata.ExifProfile = sourceImage.Metadata.ExifProfile;
+                    metadata.ExifProfile = sourceImage.Metadata.ExifProfile;
 
-                        metadata.Format = format.Name;
-                    }
+                    metadata.Format = format.Name;
                 }
-
-                context.Logger.LogLine("Photo metadata extracted succesfully");
-
-                return metadata;
             }
-            finally
-            {
-                if (File.Exists(tmpPath)) File.Delete(tmpPath);
-            }
+
+            context.Logger.LogLine("Photo metadata extracted succesfully");
+
+            return metadata;
         }
     }
 }
